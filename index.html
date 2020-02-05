@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Prueba técnica Lorena Tapia</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/main.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+
+<body>
+    <div id="app">
+        <div class="container-fluid">
+            <div class="row flex-column-reverse flex-md-row">
+                <div class="col-md-4 img-bg">
+
+                </div>
+                <div class="col-md-8 vh-100 d-flex flex-column align-items-center justify-content-center">
+                    <img class="my-3" src="assets/logo.svg" alt="">
+                    <div class="container">
+                        <div class="row justify-content-center align-items-center">
+                            <div class="col-md-6">
+                                <div class="card mb-3">
+                                    <div class="card-body" v-if="!submitted">
+                                        <form class="form-group" method="post" @submit.prevent="submit(form)">
+
+                                            <div class="form-group mb-3">
+                                                <label>Nombre</label>
+
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" placeholder="Nombre"
+                                                        v-model="form.nombre" :minlength="3" :maxlength="30">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">
+                                                                {{isNameValid() ?  'check' : 'warning'}}
+                                                            </i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label>Apellido</label>
+                                                <div class="input-group">
+
+                                                    <input type="text" class="form-control" placeholder="Apellido"
+                                                        v-model="form.apellido" :minlength="3" :maxlength="30">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">
+                                                                {{islastnameValid() ?  'check' : 'warning'}}
+                                                            </i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label>RUT</label>
+                                                <div class="input-group">
+                                                    <input id="rut" type="text" class="form-control" placeholder="Rut"
+                                                        @input="checkRut(form.rut)" v-model="form.rut">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">
+                                                                {{checkRut() ?  'check' : 'warning'}}                                                                
+                                                            </i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+
+                                            <div class="form-group mb-3">
+
+                                                <label>Edad</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" placeholder="Edad"
+                                                        v-model="form.edad">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">
+                                                                {{isAgeValid() ?  'check' : 'warning'}}
+                                                            </i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label>Email</label>
+
+                                                <div class="input-group">
+                                                    <input type="email" class="form-control" placeholder="Correo"
+                                                        v-model="form.correo">
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">
+                                                                {{isEmailValid() ?  'check' : 'warning'}}
+                                                            </i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <button class="btn btn-danger btn-block">Suscribir</button>
+                                        </form>
+                                    </div>
+                                    <div class="card-body" v-if="submitted">
+                                        <h4 class="text-capitalize">{{form.nombre}}</h4>
+                                        <p>Enviaremos un correo de confirmación a {{form.correo}}</p>
+                                        <h2>¡Gracias por suscribirte a Fork!</h2>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="myModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Por favor, verifica los datos ingresados</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            <ul>
+                                <li v-if="form.nombre.length < 3">¡El nombre es muy corto!</li>
+                                <li v-if="form.nombre.length > 30">¡El nombre es muy largo!</li>
+
+                                <li v-if="form.apellido.length < 3">¡El apellido es muy corto!</li>
+                                <li v-if="form.apellido.length > 30">¡El apellido es muy largo! </li>
+
+                                <li v-if="form.rut === ''">Debes ingresar tu RUT</li>
+                                <li v-if="rutError !== null">{{rutError}}</li>
+
+                                <li v-if="form.edad === ''">Debes ingresar una edad</li>
+
+                                <li v-if="form.edad < 0">No puedes tener una edad negativa</li>
+                                <li v-if="form.edad > 100">La inscripción es para menores de 100 años :( lo siento</li>
+
+                                <li v-if="!isEmailValid()">El email no es válido</li>
+                                
+                            </ul>
+
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Entendido!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- rut formater -->
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.0/vue.js"></script>
+    <script src="assets/main.js"></script>
+</body>
+
+</html>
