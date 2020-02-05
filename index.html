@@ -148,7 +148,6 @@
                                 <li v-if="form.apellido.length < 3">¡El apellido es muy corto!</li>
                                 <li v-if="form.apellido.length > 30">¡El apellido es muy largo! </li>
 
-                                <li v-if="form.rut === ''">Debes ingresar tu RUT</li>
                                 <li v-if="rutError !== null">{{rutError}}</li>
 
                                 <li v-if="form.edad === ''">Debes ingresar una edad</li>
